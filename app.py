@@ -24,7 +24,12 @@ def load_css(file_path="styles.css"):
 load_css()
 
 # Constants and configuration
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if "GEMINI_API_KEY" in st.secrets:
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+else:
+    # Local development: load from .env file
+    from dotenv import load_dotenv
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 VECTOR_DB_PATH = "gitlab_faiss_index"
 TEXT_FILE_PATH = "gitlab_scraped.txt"
 CHUNK_SIZE = 1000
