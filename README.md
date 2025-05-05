@@ -40,9 +40,9 @@ pip install -r requirements.txt
 ```
 
 ### 4. Set Up Environment Variables
-Create a .env file in the root directory and add your Google API key:
+Create a .env file in the root directory and add your GEMINI API key:
 ```bash
-GOOGLE_API_KEY=your_google_api_key
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
 ### 5. Scrape GitLab Documentation
