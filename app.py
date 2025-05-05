@@ -82,7 +82,7 @@ def create_or_load_vector_db():
 
                 embeddings = GoogleGenerativeAIEmbeddings(
                     model="models/embedding-001",
-                    gemini_api_key=GEMINI_API_KEY
+                    google_api_key=GEMINI_API_KEY
                 )
                 vector_db = FAISS.from_texts(chunks, embeddings)
                 vector_db.save_local(VECTOR_DB_PATH)
