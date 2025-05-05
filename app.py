@@ -66,7 +66,7 @@ def create_or_load_vector_db():
             with st.spinner("Loading vector database..."):
                 vector_db = FAISS.load_local(
                     VECTOR_DB_PATH,
-                    GoogleGenerativeAIEmbeddings(model="models/embedding-001", gemini_api_key=GEMINI_API_KEY),
+                    GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=GEMINI_API_KEY),
                     allow_dangerous_deserialization=True
                 )
                 st.session_state.vector_db = vector_db  # Store the loaded vector db in session state
