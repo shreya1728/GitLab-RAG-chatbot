@@ -57,30 +57,37 @@ def split_text_into_chunks(text_file_path):
 
 # Vector DB loader or creator
 def create_or_load_vector_db():
-    if os.path.exists(VECTOR_DB_PATH):
-        with st.spinner("Loading vector database..."):
-            vector_db = FAISS.load_local(
-                VECTOR_DB_PATH,
-                GoogleGenerativeAIEmbeddings(model="models/embedding-001", gemini_api_key=GEMINI_API_KEY),
-                allow_dangerous_deserialization=True
-            )
-            st.success("Vector database loaded successfully!")
+    # Check if the vector database is already loaded
+    if "vector_db" in st.session_state:
+        vector_db = st.session_state.vector_db
+        st.success("Vector database loaded successfully!")
     else:
-        with st.spinner("Creating vector database from text file..."):
-            if not os.path.exists(TEXT_FILE_PATH):
-                st.error(f"Text file not found: {TEXT_FILE_PATH}")
-                return None
+        if os.path.exists(VECTOR_DB_PATH):
+            with st.spinner("Loading vector database..."):
+                vector_db = FAISS.load_local(
+                    VECTOR_DB_PATH,
+                    GoogleGenerativeAIEmbeddings(model="models/embedding-001", gemini_api_key=GEMINI_API_KEY),
+                    allow_dangerous_deserialization=True
+                )
+                st.session_state.vector_db = vector_db  # Store the loaded vector db in session state
+                st.success("Vector database loaded successfully!")
+        else:
+            with st.spinner("Creating vector database from text file..."):
+                if not os.path.exists(TEXT_FILE_PATH):
+                    st.error(f"Text file not found: {TEXT_FILE_PATH}")
+                    return None
 
-            chunks = split_text_into_chunks(TEXT_FILE_PATH)
-            st.info(f"Split text into {len(chunks)} chunks")
+                chunks = split_text_into_chunks(TEXT_FILE_PATH)
+                st.info(f"Split text into {len(chunks)} chunks")
 
-            embeddings = GoogleGenerativeAIEmbeddings(
-                model="models/embedding-001",
-                gemini_api_key=GEMINI_API_KEY
-            )
-            vector_db = FAISS.from_texts(chunks, embeddings)
-            vector_db.save_local(VECTOR_DB_PATH)
-            st.success("Vector database created successfully!")
+                embeddings = GoogleGenerativeAIEmbeddings(
+                    model="models/embedding-001",
+                    gemini_api_key=GEMINI_API_KEY
+                )
+                vector_db = FAISS.from_texts(chunks, embeddings)
+                vector_db.save_local(VECTOR_DB_PATH)
+                st.session_state.vector_db = vector_db  # Store the newly created vector db in session state
+                st.success("Vector database created successfully!")
 
     return vector_db
 
